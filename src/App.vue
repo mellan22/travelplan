@@ -23,9 +23,13 @@
                 <v-list-item-title>{{ nav_list.name }}</v-list-item-title>
               </v-list-item-content>
             </template>
-            <v-list-item v-for="list in nav_list.lists" :key="list">
+            <v-list-item
+              v-for="list in nav_list.lists"
+              :key="list.name"
+              :to="list.link"
+            >
               <v-list-item-content>
-                <v-list-item-title>{{ list }}</v-list-item-title>
+                <v-list-item-title>{{ list.name }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list-group>
@@ -34,7 +38,7 @@
     </v-navigation-drawer>
     <v-app-bar src="./assets/Kye Meh.jpg" hide-on-scroll dark app clipped-left>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Stockholm</v-toolbar-title>
+      <v-toolbar-title>travelplan</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
@@ -75,17 +79,25 @@ export default {
         { name: "sightseeing", icon: "mdi-walk" }
       ],
       nav_lists: [
-        { name: "basic info", icon: "mdi-airplane" },
+        { name: "basic info", icon: "mdi-airplane", link: "/about" },
         {
           name: "plans",
           icon: "mdi-notebook-outline",
-          lists: ["day1", "day2", "day3"]
+          lists: [
+            { name: "day1", link: "/plans" },
+            { name: "day2", link: "/day2" },
+            { name: "day3", link: "/day3" }
+          ]
         },
         { name: "goal", icon: "mdi-bullseye-arrow" },
         {
           name: "members",
           icon: "mdi-account-multiple-check",
-          lists: ["names", "details"]
+          lists: [
+            { name: "names", link: "/names" },
+            { name: "details", link: "/details" },
+            ""
+          ]
         },
         { name: "edit travelplan", icon: "mdi-cogs" },
         { name: "change theme", icon: "mdi-palette" }
