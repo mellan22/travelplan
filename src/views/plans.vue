@@ -1,24 +1,31 @@
 <template>
-  <v-for plan in plans>
-    <v-card class="mx-3 my-3" max-width="800">
-      <v-card-text>
-        <div>day1</div>
-        <p class="display-1 text--primary">
-          title
-        </p>
-        <p></p>
-        <div class="text--primary">
-          well meaning and kindly.<br />
-          "a benevolent smile"
-        </div>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn text color="deep-purple accent-4">
-          More
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-for>
+  <div>
+    <div v-for="plan in plans" :key="plan.day">
+      <v-card class="mx-3 my-3" max-width="800">
+        <v-card-text>
+          <div class="body-1">day{{ plan.day }}</div>
+          <p></p>
+          <p class="headline text--primary">
+            {{ plan.title }}
+          </p>
+          <p></p>
+          <v-list class="transparent">
+            <v-list-item v-for="list in plan.lists" :key="list.type">
+              <v-list-item-content>
+                {{ list.time }} {{ list.content }}
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text color="deep-purple accent-4">
+            More
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </div>
+  </div>
 </template>
 
 <script>
