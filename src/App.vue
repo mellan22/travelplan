@@ -34,13 +34,28 @@
             </v-list-item>
           </v-list-group>
         </v-list>
+        <div v-if="isUserSignedIn">
+          <v-btn @click="signOut">logout</v-btn>
+        </div>
+        <div v-else>
+          <v-btn @click="signIn">login</v-btn>
+        </div>
       </v-container>
     </v-navigation-drawer>
     <v-app-bar src="./assets/Kye Meh.jpg" hide-on-scroll dark app clipped-left>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>travelplan</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-menu offset-y>
+
+      <v-dialog v-model="dialog" persistent max-width="600px">
+        <template v-slot:activator="{ on }">
+          <v-btn dark v-on="on" outlined>add new plan</v-btn>
+        </template>
+        <!-- 子コンポーネントからフォームを閉じる指令を受け取る -->
+        <inputPlan @from-child="closeInputForm"></inputPlan>
+      </v-dialog>
+
+      <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" outlined
             >add new plan
@@ -58,9 +73,10 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
-      </v-menu>
+      </v-menu> -->
     </v-app-bar>
     <v-content>
+      <inputBasicData></inputBasicData>
       <router-view />
     </v-content>
     <v-footer dark app>
@@ -69,14 +85,32 @@
   </v-app>
 </template>
 <script>
+// import DatePicker from "./components/DatePicker";
+import inputPlan from "./components/inputPlan";
+import inputBasicData from "./components/inputBasicData";
+
 export default {
+  name: "App",
+  components: {
+    inputPlan,
+    inputBasicData,
+  },
   data() {
     return {
       drawer: null,
+      dialog: null,
+      value: null,
+      user: null,
+      isSignedIn: null,
       plantypes: [
         { name: "transport", icon: "mdi-bus-multiple" },
         { name: "hotel", icon: "mdi-home-circle" },
-        { name: "sightseeing", icon: "mdi-walk" }
+        { name: "sightseeing", icon: "mdi-walk" },
+      ],
+      members: [
+        { name: "Linda", phone: "XX-XXX-XXXX" },
+        { name: "Michael", phone: "XX-XXX-XXXX" },
+        { name: "Maria", phone: "XX-XXX-XXXX" },
       ],
       nav_lists: [
         { name: "basic info", icon: "mdi-airplane", link: "/about" },
@@ -86,23 +120,50 @@ export default {
           lists: [
             { name: "day1", link: "/plans" },
             { name: "day2", link: "/day2" },
-            { name: "day3", link: "/day3" }
-          ]
+            { name: "day3", link: "/day3" },
+          ],
         },
-        { name: "goal", icon: "mdi-bullseye-arrow" },
         {
           name: "members",
           icon: "mdi-account-multiple-check",
           lists: [
             { name: "names", link: "/names" },
             { name: "details", link: "/details" },
-            ""
-          ]
+          ],
         },
-        { name: "edit travelplan", icon: "mdi-cogs" },
-        { name: "change theme", icon: "mdi-palette" }
-      ]
+        {
+          name: "settings",
+          icon: "mdi-palette",
+          lists: [
+            { name: "change theme", link: "/names" },
+            { name: "edit basic info", link: "/basic_form" },
+          ],
+        },
+      ],
     };
-  }
+  },
+  methods: {
+    signIn() {
+      const provider = new this.$firebase.auth.GoogleAuthProvider();
+      this.$firebase.auth().signInWithRedirect(provider);
+    },
+    // ログアウト
+    signOut() {
+      this.$firebase.auth().signOut();
+    },
+    // ログインしてるかチェック
+    isUserSignedIn() {
+      return !!this.$firebase.auth().currentUser || false;
+    },
+    onAuthStateChanged() {
+      this.$firebase.auth().onAuthStateChanged((user) => {
+        this.user = user;
+        this.isSignedIn = user ? true : false;
+      });
+    },
+    closeInputForm() {
+      this.dialog = !this.dialog;
+    },
+  },
 };
 </script>
