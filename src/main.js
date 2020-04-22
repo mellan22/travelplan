@@ -6,6 +6,7 @@ import router from "./router";
 /* Import the firebase SDK and extend with firestore */
 const firebase = require("firebase/app");
 require("firebase/firestore");
+require("firebase/auth");
 
 const firebaseConfig = {
   apiKey: "AIzaSyBxKS-rvKqF29vjOEDYKWYZ2KmJgp1pLWE",
