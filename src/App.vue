@@ -34,7 +34,7 @@
             </v-list-item>
           </v-list-group>
         </v-list>
-        <div v-if="isUserSignedIn">
+        <div v-if="isSignedIn">
           <v-btn @click="signOut">logout</v-btn>
         </div>
         <div v-else>
@@ -54,7 +54,6 @@
         <!-- 子コンポーネントからフォームを閉じる指令を受け取る -->
         <inputPlan @from-child="closeInputForm"></inputPlan>
       </v-dialog>
-
       <!-- <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" outlined
@@ -76,8 +75,13 @@
       </v-menu> -->
     </v-app-bar>
     <v-content>
-      <inputBasicData></inputBasicData>
-      <router-view />
+      <div v-if="isSignedIn">
+        <router-view />
+        <inputBasicData></inputBasicData>
+      </div>
+      <div v-else>
+        login from navigation menu above!
+      </div>
     </v-content>
     <v-footer dark app>
       Vuetify
@@ -141,6 +145,9 @@ export default {
         },
       ],
     };
+  },
+  created() {
+    this.onAuthStateChanged();
   },
   methods: {
     signIn() {
