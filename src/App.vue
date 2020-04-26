@@ -47,7 +47,7 @@
       <v-toolbar-title>travelplan</v-toolbar-title>
       <v-spacer></v-spacer>
 
-      <v-dialog v-model="dialog" persistent max-width="600px">
+      <v-dialog v-model="plan_dialog" persistent max-width="600px">
         <template v-slot:activator="{ on }">
           <v-btn dark v-on="on" outlined>add new plan</v-btn>
         </template>
@@ -77,7 +77,6 @@
     <v-content>
       <div v-if="isSignedIn">
         <router-view />
-        <inputBasicData></inputBasicData>
       </div>
       <div v-else>
         login from navigation menu above!
@@ -91,18 +90,16 @@
 <script>
 // import DatePicker from "./components/DatePicker";
 import inputPlan from "./components/inputPlan";
-import inputBasicData from "./components/inputBasicData";
 
 export default {
   name: "App",
   components: {
     inputPlan,
-    inputBasicData,
   },
   data() {
     return {
       drawer: null,
-      dialog: null,
+      plan_dialog: null,
       value: null,
       user: null,
       isSignedIn: null,
@@ -158,7 +155,7 @@ export default {
     signOut() {
       this.$firebase.auth().signOut();
     },
-    // ログインしてるかチェック
+    // ログインしてるかチェックする
     isUserSignedIn() {
       return !!this.$firebase.auth().currentUser || false;
     },
@@ -166,10 +163,33 @@ export default {
       this.$firebase.auth().onAuthStateChanged((user) => {
         this.user = user;
         this.isSignedIn = user ? true : false;
+        this.userCheck();
       });
     },
     closeInputForm() {
-      this.dialog = !this.dialog;
+      this.plan_dialog = !this.plan_dialog;
+    },
+    // 初回ログインかどうかをチェックする処理
+    userCheck() {
+      const user = this.$firebase.auth().currentUser;
+      //login状態じゃない時はreturn
+      if (!user) {
+        return;
+      }
+      const db = this.$firebase.firestore();
+      db.collection("users")
+        .doc(user.uid)
+        .get()
+        .then((doc) => {
+          //初回ログインの時はusersに追加
+          if (!doc.exists) {
+            db.collection("users")
+              .doc(user.uid)
+              .set({
+                travel_id: [],
+              });
+          }
+        });
     },
   },
 };
