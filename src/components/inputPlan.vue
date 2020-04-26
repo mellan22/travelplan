@@ -7,9 +7,9 @@
       <v-container>
         <v-row>
           <v-col cols="12" sm="6" md="4">
-            <v-text-field label="date" v-model="value">
+            <v-text-field label="date*" v-model="date">
               <template v-slot:append-outer>
-                <date-picker v-model="value" />
+                <date-picker v-model="date" />
               </template>
             </v-text-field>
           </v-col>
@@ -65,13 +65,15 @@ import DatePicker from "./DatePicker";
 
 export default {
   name: "App",
+  props: {
+    travel_id: null,
+  },
   components: {
     DatePicker,
   },
   data() {
     return {
-      value: null,
-
+      date: null,
       selected_time: null,
       selected_plantype: null,
       content: null,
@@ -119,18 +121,22 @@ export default {
   methods: {
     sendPlanData() {
       this.$emit("from-child", true);
-      this.dialog = !this.dialog;
+      console.log(this.travel_id);
       const db = this.$firebase.firestore();
-      const info_ref = db.collection("plans").doc();
+      const info_ref = db
+        .collection("plans")
+        .doc(this.travel_id)
+        .collection(this.date)
+        .doc();
       info_ref.set({
         booked_by: this.booking_member,
         content: this.content,
         costs: this.costs,
-        date: this.value,
+        date: this.date,
         time: this.selected_time,
         type: this.selected_plantype,
-        travel_id: null,
       });
+      console.log("done");
     },
     cancel() {
       this.$emit("from-child", true);
