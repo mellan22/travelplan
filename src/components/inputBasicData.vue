@@ -37,6 +37,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
+      <v-btn color="blue darken-1" text @click="close">close</v-btn>
       <v-btn color="blue darken-1" text @click="sendBasicData"
         >start Planning</v-btn
       >
@@ -54,10 +55,8 @@ export default {
   },
   data() {
     return {
-      value: null,
-
-      start: null,
-      end: null,
+      start_date: null,
+      end_date: null,
       destination: null,
       goal: null,
 
@@ -69,16 +68,44 @@ export default {
     };
   },
   methods: {
+    close() {
+      this.$emit("from-child");
+    },
     sendBasicData() {
-      this.$emit("from-child", true);
+      this.$emit("from-child");
+      const user = this.$firebase.auth().currentUser;
+      //basic_infoにデータを登録
       const db = this.$firebase.firestore();
+      const batch = db.batch();
+
       const info_ref = db.collection("basic_info").doc();
-      info_ref.set({
+      batch.set(info_ref, {
         start_date: this.start_date,
         end_date: this.end_date,
         destination: this.destination,
         goal: this.goal,
+        create_uid: user.uid,
       });
+      const user_ref = db.collection("users").doc(user.uid);
+      batch.update(user_ref, {
+        travel_id: this.$firebase.firestore.FieldValue.arrayUnion(info_ref.id),
+      });
+      batch
+        .commit()
+        .then(function() {
+          // 作成したルームへ移動
+          console.log("batch end");
+          self.$router.push({
+            name: "plan",
+            params: { travel_id: info_ref.id },
+          });
+        })
+        .catch(function(error) {
+          console.log(error);
+          self.hasError = true;
+          self.errorMessage = "Oops!";
+          return;
+        });
     },
   },
 };
