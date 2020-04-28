@@ -36,10 +36,26 @@
         </v-list>
       </v-container>
     </v-navigation-drawer>
-    <v-app-bar src="./assets/Kye Meh.jpg" hide-on-scroll dark app clipped-left>
+    <v-app-bar v-bind:src="colorSrc" hide-on-scroll dark app clipped-left>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>travelplan</v-toolbar-title>
       <v-spacer></v-spacer>
+
+      <v-menu top offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn class="mx-3" dark outlined v-on="on">change color</v-btn>
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="(item, index) in colour"
+            :key="index"
+            @click="changeColor(item.title)"
+          >
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
       <div v-if="isSignedIn">
         <v-btn dark outlined @click="signOut">logout</v-btn>
       </div>
@@ -55,9 +71,7 @@
         login from navigation menu above!
       </div>
     </v-content>
-    <v-footer dark app>
-      Vuetify
-    </v-footer>
+    <v-footer dark app></v-footer>
   </v-app>
 </template>
 <script>
@@ -65,11 +79,18 @@ export default {
   name: "App",
   data() {
     return {
+      colorSrc: require("./assets/Kye Meh.jpg"),
       drawer: null,
       plan_dialog: null,
       value: null,
       user: null,
       isSignedIn: null,
+      colour: [
+        { title: "Dania" },
+        { title: "Dawn" },
+        { title: "Sweet Morning" },
+        { title: "Kye Meh" },
+      ],
       nav_lists: [
         {
           name: "manage travels",
@@ -83,7 +104,7 @@ export default {
           name: "settings",
           icon: "mdi-palette",
           lists: [
-            { name: "change theme", link: "/names" },
+            { name: "change theme", link: "/" },
             { name: "edit basic info", link: "/basic_form" },
           ],
         },
@@ -94,6 +115,9 @@ export default {
     this.onAuthStateChanged();
   },
   methods: {
+    changeColor(name) {
+      return (this.colorSrc = require("./assets/" + name + ".jpg"));
+    },
     signIn() {
       const provider = new this.$firebase.auth.GoogleAuthProvider();
       this.$firebase.auth().signInWithRedirect(provider);
