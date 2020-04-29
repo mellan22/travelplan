@@ -68,7 +68,9 @@
         <router-view />
       </div>
       <div v-else>
-        login from navigation menu above!
+        <v-row style="height: 100px;" justify="center" align-content="center">
+          login from the button above!
+        </v-row>
       </div>
     </v-content>
     <v-footer dark app></v-footer>

@@ -123,20 +123,31 @@ export default {
       this.$emit("from-child", true);
       console.log(this.travel_id);
       const db = this.$firebase.firestore();
-      const info_ref = db
+      const plan_ref = db
         .collection("plans")
         .doc(this.travel_id)
-        .collection(this.date)
+        .collection("data")
         .doc();
-      info_ref.set({
-        booked_by: this.booking_member,
-        content: this.content,
-        costs: this.costs,
-        date: this.date,
-        time: this.selected_time,
-        type: this.selected_plantype,
+      plan_ref
+        .set({
+          booked_by: this.booking_member,
+          content: this.content,
+          costs: this.costs,
+          date: this.date,
+          time: this.selected_time,
+          type: this.selected_plantype,
+        })
+        .then(function() {
+          console.log("plan_input_end");
+          self.$router.go({
+            path: self.$router.currentRoute.path,
+            force: true,
+          });
+        });
+      self.$router.go({
+        path: self.$router.currentRoute.path,
+        force: true,
       });
-      console.log("done");
     },
     cancel() {
       this.$emit("from-child", true);

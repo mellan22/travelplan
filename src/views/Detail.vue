@@ -1,12 +1,23 @@
 <template>
   <div>
-    <div v-for="plan in plans" :key="plan.time">
+    <div v-if="hasNoPlans">
+      <v-row style="height: 100px;" justify="center" align-content="center">
+        you haven't started planning. <br />
+        Let's add your plans from the button below!
+      </v-row>
+    </div>
+    <div v-for="date in datelist" :key="date">
       <v-card class="mx-5 my-5" max-width="800">
-        <v-card-title>{{ plan.date }}</v-card-title>
-        <v-card-subtitle class="title">{{ plan.summary }} </v-card-subtitle>
-        <v-card-text class="text--primary">
-          {{ plan.time }} {{ plan.content }}
-        </v-card-text>
+        <v-card-title>{{ date }}</v-card-title>
+        <!-- <v-card-subtitle class="title">{{ plan.summary }} </v-card-subtitle> -->
+        <div v-for="plan in plans" :key="plan.time">
+          <div v-if="date == plan.date">
+            <v-card-text>
+              <span class="indigo--text"> {{ plan.time }}</span>
+              <span class="text--primary"> ：{{ plan.content }} </span>
+            </v-card-text>
+          </div>
+        </div>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="orange" text>
@@ -41,7 +52,9 @@ export default {
     return {
       plan_dialog: null,
       plans: null,
+      datelist: null,
       travel_id: null,
+      hasPlans: null,
     };
   },
   created() {
@@ -53,20 +66,32 @@ export default {
     },
     getTravelDetailData: async function() {
       this.travel_id = this.$route.params.travel_id;
+      // this.start_date =
       console.log(this.travel_id);
       const db = this.$firebase.firestore();
+      // let datebox = {};
       let info = [];
+      let datelist = [];
       const plan_ref = db
         .collection("plans")
         .doc(this.travel_id)
         .collection("data");
-      plan_ref.get().then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
-          // doc.data() is never undefined for query doc snapshots
-          info.push(doc.data());
+      plan_ref
+        .orderBy("date")
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            if (datelist.indexOf(doc.data().date) == -1) {
+              datelist.push(doc.data().date);
+            }
+            info.push(doc.data());
+          });
         });
-      });
+      this.datelist = datelist;
       this.plans = info;
+      if (datelist.length == 0) {
+        this.hasNoPlans = true;
+      }
     },
   },
 };
