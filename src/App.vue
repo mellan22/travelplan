@@ -106,8 +106,8 @@ export default {
           name: "settings",
           icon: "mdi-palette",
           lists: [
-            { name: "change theme", link: "/" },
-            { name: "edit basic info", link: "/basic_form" },
+            { name: "edit user info", link: "/" },
+            { name: "delete travels", link: "/basic_form" },
           ],
         },
       ],
@@ -117,6 +117,8 @@ export default {
     this.onAuthStateChanged();
   },
   methods: {
+    //ヘッダーの色を変える。
+    //TODO:vuex等で状態を保持できるようにする。
     changeColor(name) {
       return (this.colorSrc = require("./assets/" + name + ".jpg"));
     },

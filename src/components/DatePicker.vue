@@ -1,3 +1,5 @@
+//各フォームの日付入力欄でカレンダーを表示する
+
 <template>
   <v-menu v-model="menu" offset-y :close-on-content-click="false">
     <template v-slot:activator="{ on }">

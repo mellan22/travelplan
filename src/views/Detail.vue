@@ -1,11 +1,14 @@
+// 日付ごとに詳細予定を表示するコンポーネント
+
 <template>
   <div>
-    <div v-if="hasNoPlans">
+    <!-- TODO: データがないときはこのメッセージを出したい -->
+    <!-- <div v-if="!hasPlans">
       <v-row style="height: 100px;" justify="center" align-content="center">
         you haven't started planning. <br />
         Let's add your plans from the button below!
       </v-row>
-    </div>
+    </div> -->
     <div v-for="date in datelist" :key="date">
       <v-card class="mx-5 my-5" max-width="800">
         <v-card-title>{{ date }}</v-card-title>
@@ -66,7 +69,6 @@ export default {
     },
     getTravelDetailData: async function() {
       this.travel_id = this.$route.params.travel_id;
-      // this.start_date =
       console.log(this.travel_id);
       const db = this.$firebase.firestore();
       // let datebox = {};
@@ -89,9 +91,6 @@ export default {
         });
       this.datelist = datelist;
       this.plans = info;
-      if (datelist.length == 0) {
-        this.hasNoPlans = true;
-      }
     },
   },
 };
