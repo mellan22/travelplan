@@ -93,7 +93,6 @@ export default {
       batch
         .commit()
         .then(function() {
-          // 作成したルームへ移動
           console.log("batch end");
           self.$router.push({
             name: "plan",
