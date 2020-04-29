@@ -24,15 +24,9 @@ const routes = [
     name: "costs",
     component: costs,
   },
-  {
-    path: "/plans",
-    name: "plans",
-    component: () => import("../components/plans.vue"),
-  },
 ];
 
 const router = new VueRouter({
-  mode: "history",
   routes,
 });
 

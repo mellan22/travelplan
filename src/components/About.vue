@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div v-if="hasNoTravels">
+      <v-row style="height: 100px;" justify="center" align-content="center">
+        Let's start your planning from the buttom below!
+      </v-row>
+    </div>
     <div v-for="info in basic_info" :key="info.destination">
       <v-card class="mx-5 my-5" max-width="800">
         <v-img class="white--text align-end" height="200px" :src="image_src">
