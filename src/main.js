@@ -1,5 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
+import { firestorePlugin } from "vuefire";
 import vuetify from "./plugins/vuetify";
 import router from "./router";
 
@@ -8,6 +9,7 @@ const firebase = require("firebase/app");
 require("firebase/firestore");
 require("firebase/auth");
 
+Vue.use(firestorePlugin);
 const firebaseConfig = {
   apiKey: "AIzaSyBxKS-rvKqF29vjOEDYKWYZ2KmJgp1pLWE",
   authDomain: "travelplan-af237.firebaseapp.com",
