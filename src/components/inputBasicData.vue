@@ -3,45 +3,47 @@
     <v-card-title>
       <span class="headline">add new Travel</span>
     </v-card-title>
-    <v-card-text>
-      <v-container>
-        <v-row>
-          <!-- https://qiita.com/fukuman/items/b0bc84081ad0d2bc522aあとでこれで直す -->
-          <v-col cols="12" sm="6" md="4">
-            <v-text-field label="start from*" required v-model="start_date">
-              <template v-slot:append-outer>
-                <date-picker v-model="start_date" />
-              </template>
-            </v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6" md="4">
-            <v-text-field label="come back on*" required v-model="end_date">
-              <template v-slot:append-outer>
-                <date-picker v-model="end_date" />
-              </template>
-            </v-text-field>
-          </v-col>
-          <v-col cols="12">
-            <v-text-field
-              v-model="destination"
-              label="destination*"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12">
-            <v-text-field v-model="goal" label="goal"></v-text-field>
-          </v-col>
-        </v-row>
-      </v-container>
-      <small>*indicates required field</small>
-    </v-card-text>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn color="blue darken-1" text @click="close">close</v-btn>
-      <v-btn color="blue darken-1" text @click="sendBasicData"
-        >start Planning</v-btn
-      >
-    </v-card-actions>
+    <v-form ref="basic_form">
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <!-- https://qiita.com/fukuman/items/b0bc84081ad0d2bc522aあとでこれで直す -->
+            <v-col cols="12" sm="6" md="4">
+              <v-text-field label="start from*" required v-model="start_date">
+                <template v-slot:append-outer>
+                  <date-picker v-model="start_date" />
+                </template>
+              </v-text-field>
+            </v-col>
+            <v-col cols="12" sm="6" md="4">
+              <v-text-field label="come back on*" required v-model="end_date">
+                <template v-slot:append-outer>
+                  <date-picker v-model="end_date" />
+                </template>
+              </v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                v-model="destination"
+                label="destination*"
+                required
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field v-model="goal" label="goal"></v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+        <small>*indicates required field</small>
+      </v-card-text>
+      <v-row>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" text @click="close">close</v-btn>
+        <v-btn color="blue darken-1" text class="mr-4" @click="sendBasicData"
+          >start Planning</v-btn
+        >
+      </v-row>
+    </v-form>
   </v-card>
 </template>
 
@@ -72,6 +74,7 @@ export default {
       this.$emit("from-child");
     },
     sendBasicData() {
+      const self = this;
       this.$emit("from-child");
       const user = this.$firebase.auth().currentUser;
       //basic_infoにデータを登録
@@ -94,10 +97,7 @@ export default {
         .commit()
         .then(function() {
           console.log("batch end");
-          self.$router.push({
-            name: "plan",
-            params: { travel_id: info_ref.id },
-          });
+          return;
         })
         .catch(function(error) {
           console.log(error);
