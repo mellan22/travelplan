@@ -39,7 +39,7 @@
       <v-row>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" text @click="close">close</v-btn>
-        <v-btn color="blue darken-1" text class="mr-4" @click="sendBasicData"
+        <v-btn color="blue darken-1" text class="mr-3" @click="sendBasicData"
           >start Planning</v-btn
         >
       </v-row>
