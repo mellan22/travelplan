@@ -9,14 +9,22 @@
           <v-row>
             <!-- https://qiita.com/fukuman/items/b0bc84081ad0d2bc522aあとでこれで直す -->
             <v-col cols="12" sm="6" md="4">
-              <v-text-field label="start from*" required v-model="start_date">
+              <v-text-field
+                label="start from*"
+                :rules="[rules.required]"
+                v-model="start_date"
+              >
                 <template v-slot:append-outer>
                   <date-picker v-model="start_date" />
                 </template>
               </v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="4">
-              <v-text-field label="come back on*" required v-model="end_date">
+              <v-text-field
+                label="come back on*"
+                :rules="[rules.required]"
+                v-model="end_date"
+              >
                 <template v-slot:append-outer>
                   <date-picker v-model="end_date" />
                 </template>
@@ -26,7 +34,7 @@
               <v-text-field
                 v-model="destination"
                 label="destination*"
-                required
+                :rules="[rules.required]"
               ></v-text-field>
             </v-col>
             <v-col cols="12">
@@ -61,7 +69,9 @@ export default {
       end_date: null,
       destination: null,
       goal: null,
-
+      rules: {
+        required: (value) => !!value || "必ず入力してください",
+      },
       members: [
         { name: "Linda", phone: "XX-XXX-XXXX" },
         { name: "Michael", phone: "XX-XXX-XXXX" },
@@ -74,6 +84,9 @@ export default {
       this.$emit("from-child");
     },
     sendBasicData() {
+      if (!this.$refs.basic_form.validate()) {
+        return;
+      }
       const self = this;
       this.$emit("from-child");
       const user = this.$firebase.auth().currentUser;

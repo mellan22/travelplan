@@ -3,60 +3,70 @@
     <v-card-title>
       <span class="headline">add new plan</span>
     </v-card-title>
-    <v-card-text>
-      <v-container>
-        <v-row>
-          <v-col cols="12" sm="6" md="4">
-            <v-text-field label="date*" v-model="date">
-              <template v-slot:append-outer>
-                <date-picker v-model="date" />
-              </template>
-            </v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6" md="4">
-            <v-select
-              v-model="selected_time"
-              class="px-2"
-              standard
-              :items="time"
-              append-icon="mdi-clock-outline"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" sm="6">
-            <v-select
-              v-model="selected_plantype"
-              item-text="name"
-              :items="plantypes"
-              label="type"
-            ></v-select>
-          </v-col>
-          <v-col cols="12">
-            <v-text-field
-              v-model="content"
-              label="content"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" sm="6" md="4">
-            <v-select
-              v-model="booking_member"
-              item-text="name"
-              :items="members"
-              label="booked by"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" sm="6" md="4">
-            <v-text-field v-model="costs" label="costs" required></v-text-field>
-          </v-col>
-        </v-row>
-      </v-container>
-      <small>*indicates required field</small>
-    </v-card-text>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn color="blue darken-1" text @click="cancel">Close</v-btn>
-      <v-btn color="blue darken-1" text @click="sendPlanData">Save</v-btn>
-    </v-card-actions>
+    <v-form ref="input_plan_form">
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <v-col cols="12" sm="6" md="4">
+              <v-text-field
+                label="date*"
+                v-model="date"
+                :rules="[rules.required]"
+              >
+                <template v-slot:append-outer>
+                  <date-picker v-model="date" />
+                </template>
+              </v-text-field>
+            </v-col>
+            <v-col cols="12" sm="6" md="4">
+              <v-select
+                v-model="selected_time"
+                class="px-2"
+                standard
+                :items="time"
+                append-icon="mdi-clock-outline"
+              ></v-select>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-select
+                v-model="selected_plantype"
+                item-text="name"
+                :items="plantypes"
+                label="type"
+              ></v-select>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                v-model="content"
+                label="content"
+                :rules="[rules.required]"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="6" md="4">
+              <v-select
+                v-model="booking_member"
+                item-text="name"
+                :items="members"
+                label="booked by"
+              ></v-select>
+            </v-col>
+            <v-col cols="12" sm="6" md="4">
+              <v-text-field
+                v-model="costs"
+                label="costs"
+                required
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+        <small>*indicates required field</small>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" text @click="cancel">Close</v-btn>
+        <v-btn color="blue darken-1" text @click="sendPlanData">Save</v-btn>
+      </v-card-actions>
+    </v-form>
   </v-card>
 </template>
 
@@ -116,10 +126,16 @@ export default {
         { name: "Michael", phone: "XX-XXX-XXXX" },
         { name: "Maria", phone: "XX-XXX-XXXX" },
       ],
+      rules: {
+        required: (value) => !!value || "必ず入力してください",
+      },
     };
   },
   methods: {
     sendPlanData() {
+      if (!this.$refs.input_plan_form.validate()) {
+        return;
+      }
       this.$emit("from-child", true);
       console.log(this.travel_id);
       const db = this.$firebase.firestore();
