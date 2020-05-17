@@ -38,7 +38,7 @@
             <v-col cols="12">
               <v-text-field
                 v-model="content"
-                label="content"
+                label="content*"
                 :rules="[rules.required]"
               ></v-text-field>
             </v-col>

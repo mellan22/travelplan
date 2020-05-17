@@ -3,11 +3,11 @@
 
 <template>
   <div>
-    <div v-if="!hasTravels">
+    <!-- <div v-if="!hasTravels">
       <v-row style="height: 100px;" justify="center" align-content="center">
         Let's start your planning from the buttom below!
       </v-row>
-    </div>
+    </div> -->
     <about
       v-for="travel_id in travel_ids"
       :key="travel_id"
@@ -39,7 +39,7 @@ export default {
     return {
       travel_ids: null,
       basic_data_dialog: null,
-      hasNoTravels: null,
+      hasTravels: null,
     };
   },
   created() {
@@ -50,8 +50,10 @@ export default {
       const db = this.$firebase.firestore();
       const user = this.$firebase.auth().currentUser;
       if (!user) {
+        this.hasTravels = false;
         return;
       }
+      console.log(user);
       // ユーザに紐づくtravel_idを取得
       const user_ref = db.collection("users").doc(user.uid);
       const user_snap = await user_ref.get();
