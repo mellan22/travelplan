@@ -8,7 +8,30 @@
         <v-container>
           <v-row>
             <v-col cols="12" sm="6" md="4">
-              <v-text-field
+              <v-menu
+                v-model="menu2"
+                :close-on-content-click="true"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="date"
+                    label="Picker without buttons"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="date"
+                  @input="menu2 = false"
+                ></v-date-picker>
+              </v-menu>
+              <!-- <v-text-field
                 label="date*"
                 v-model="date"
                 :rules="[rules.required]"
@@ -16,16 +39,42 @@
                 <template v-slot:append-outer>
                   <date-picker v-model="date" />
                 </template>
-              </v-text-field>
+              </v-text-field> -->
             </v-col>
             <v-col cols="12" sm="6" md="4">
-              <v-select
+              <v-dialog
+                ref="dialog"
+                v-model="modal2"
+                :return-value.sync="time"
+                persistent
+                width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="time"
+                    label="time"
+                    prepend-icon="mdi-clock-outline"
+                    readonly
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-time-picker v-if="modal2" v-model="time" full-width>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="modal2 = false"
+                    >Cancel</v-btn
+                  >
+                  <v-btn text color="primary" @click="$refs.dialog.save(time)"
+                    >OK</v-btn
+                  >
+                </v-time-picker>
+              </v-dialog>
+              <!-- <v-select
                 v-model="selected_time"
                 class="px-2"
                 standard
                 :items="time"
                 append-icon="mdi-clock-outline"
-              ></v-select>
+              ></v-select> -->
             </v-col>
             <v-col cols="12" sm="6">
               <v-select
@@ -71,7 +120,7 @@
 </template>
 
 <script>
-import DatePicker from "./DatePicker";
+// import DatePicker from "./DatePicker";
 
 export default {
   name: "App",
@@ -79,7 +128,7 @@ export default {
     travel_id: null,
   },
   components: {
-    DatePicker,
+    // DatePicker,
   },
   data() {
     return {
@@ -89,33 +138,10 @@ export default {
       content: null,
       booking_member: null,
       costs: null,
+      modal: false,
+      modal2: false,
 
-      time: [
-        "7:00",
-        "8:00",
-        "9:00",
-        "10:00",
-        "11:00",
-        "12:00",
-        "13:00",
-        "14:00",
-        "15:00",
-        "16:00",
-        "17:00",
-        "18:00",
-        "19:00",
-        "20:00",
-        "21:00",
-        "22:00",
-        "23:00",
-        "24:00",
-        "1:00",
-        "2:00",
-        "3:00",
-        "4:00",
-        "5:00",
-        "6:00",
-      ],
+      time: null,
       plantypes: [
         { name: "transport", icon: "mdi-bus-multiple" },
         { name: "hotel", icon: "mdi-home-circle" },
