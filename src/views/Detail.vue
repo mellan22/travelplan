@@ -9,11 +9,11 @@
         Let's add your plans from the button below!
       </v-row>
     </div> -->
-    <div v-for="date in datelist" :key="date">
+    <div v-for="date in datelist" :key="date.id">
       <v-card class="mx-5 my-5" max-width="800">
         <v-card-title>{{ date }}</v-card-title>
         <!-- <v-card-subtitle class="title">{{ plan.summary }} </v-card-subtitle> -->
-        <div v-for="plan in plans" :key="plan.time">
+        <div v-for="plan in plans" :key="plan.id">
           <div v-if="date == plan.date">
             <v-card-text>
               <span class="indigo--text"> {{ plan.time }}</span>
@@ -80,6 +80,7 @@ export default {
         .collection("data");
       plan_ref
         .orderBy("date")
+        .orderBy("time")
         .get()
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
