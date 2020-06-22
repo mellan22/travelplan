@@ -156,7 +156,7 @@ export default {
           costs: this.costs,
           date: this.date,
           time: this.time,
-          type: this.selected_plantype,
+          type: this.plantype,
         })
         .then(function() {
           console.log("plan_input_end");
