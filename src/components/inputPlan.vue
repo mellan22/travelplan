@@ -9,7 +9,7 @@
           <v-row>
             <v-col cols="12" sm="6" md="4">
               <v-menu
-                v-model="menu2"
+                v-model="date_form"
                 :close-on-content-click="true"
                 :nudge-right="40"
                 transition="scale-transition"
@@ -19,32 +19,24 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     v-model="date"
-                    label="Picker without buttons"
+                    label="date"
                     prepend-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
                     v-on="on"
+                    :rules="[rules.required]"
                   ></v-text-field>
                 </template>
                 <v-date-picker
                   v-model="date"
-                  @input="menu2 = false"
+                  @input="date_form = false"
                 ></v-date-picker>
               </v-menu>
-              <!-- <v-text-field
-                label="date*"
-                v-model="date"
-                :rules="[rules.required]"
-              >
-                <template v-slot:append-outer>
-                  <date-picker v-model="date" />
-                </template>
-              </v-text-field> -->
             </v-col>
             <v-col cols="12" sm="6" md="4">
               <v-dialog
                 ref="dialog"
-                v-model="modal2"
+                v-model="time_form"
                 :return-value.sync="time"
                 persistent
                 width="290px"
@@ -58,9 +50,9 @@
                     v-on="on"
                   ></v-text-field>
                 </template>
-                <v-time-picker v-if="modal2" v-model="time" full-width>
+                <v-time-picker v-if="time_form" v-model="time" full-width>
                   <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="modal2 = false"
+                  <v-btn text color="primary" @click="time_form = false"
                     >Cancel</v-btn
                   >
                   <v-btn text color="primary" @click="$refs.dialog.save(time)"
@@ -68,17 +60,10 @@
                   >
                 </v-time-picker>
               </v-dialog>
-              <!-- <v-select
-                v-model="selected_time"
-                class="px-2"
-                standard
-                :items="time"
-                append-icon="mdi-clock-outline"
-              ></v-select> -->
             </v-col>
             <v-col cols="12" sm="6">
               <v-select
-                v-model="selected_plantype"
+                v-model="plantype"
                 item-text="name"
                 :items="plantypes"
                 label="type"
@@ -120,28 +105,21 @@
 </template>
 
 <script>
-// import DatePicker from "./DatePicker";
-
 export default {
   name: "App",
   props: {
     travel_id: null,
   },
-  components: {
-    // DatePicker,
-  },
   data() {
     return {
       date: null,
-      selected_time: null,
-      selected_plantype: null,
+      time: null,
+      plantype: null,
       content: null,
       booking_member: null,
       costs: null,
-      modal: false,
-      modal2: false,
-
-      time: null,
+      date_form: false,
+      time_form: false,
       plantypes: [
         { name: "transport", icon: "mdi-bus-multiple" },
         { name: "hotel", icon: "mdi-home-circle" },
@@ -154,6 +132,7 @@ export default {
       ],
       rules: {
         required: (value) => !!value || "必ず入力してください",
+        // todo: costは数値だけ受け付けるようruleを追加
       },
     };
   },
@@ -176,20 +155,17 @@ export default {
           content: this.content,
           costs: this.costs,
           date: this.date,
-          time: this.selected_time,
+          time: this.time,
           type: this.selected_plantype,
         })
         .then(function() {
           console.log("plan_input_end");
-          self.$router.go({
-            path: self.$router.currentRoute.path,
-            force: true,
-          });
         });
-      self.$router.go({
-        path: self.$router.currentRoute.path,
-        force: true,
-      });
+      // todo: ここでリアルタイム読み込みできるようにする
+      // self.$router.go({
+      //   path: self.$router.currentRoute.path,
+      //   force: true,
+      // });
     },
     cancel() {
       this.$emit("from-child", true);
