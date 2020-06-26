@@ -16,7 +16,14 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="orange" text>
+          <v-btn text>
+            <router-link
+              v-bind:to="{ name: 'plan', params: { travel_id: travel_id } }"
+              >Edit</router-link
+            >
+          </v-btn>
+
+          <v-btn text>
             <router-link
               v-bind:to="{ name: 'plan', params: { travel_id: travel_id } }"
               >Detail</router-link
