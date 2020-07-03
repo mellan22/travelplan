@@ -16,12 +16,13 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text>
-            <router-link
-              v-bind:to="{ name: 'plan', params: { travel_id: travel_id } }"
-              >Edit</router-link
-            >
-          </v-btn>
+
+          <v-dialog v-model="basic_info_dialog" persistent max-width="600px">
+            <template v-slot:activator="{ on }">
+              <v-btn v-on="on" text>Edit</v-btn>
+            </template>
+            <basicInfoForm @from-child="closeBasicInfoForm"></basicInfoForm>
+          </v-dialog>
 
           <v-btn text>
             <router-link
@@ -36,14 +37,20 @@
 </template>
 
 <script>
+import basicInfoForm from "./basicInfoForm";
+
 export default {
   props: {
     travel_id: {},
+  },
+  components: {
+    basicInfoForm,
   },
   data() {
     return {
       image_src: require("../assets/stockholm.jpg"),
       basic_info: null,
+      basic_info_dialog: null,
       hasNoTravels: null,
     };
   },
@@ -60,6 +67,9 @@ export default {
         info.push(doc.data());
       });
       this.basic_info = info;
+    },
+    closeBasicInfoForm() {
+      this.basic_info_dialog = !this.basic_info_dialog;
     },
   },
 };
